@@ -1,0 +1,86 @@
+body{
+    background-color: black;
+    color: white;
+    height: 100%;
+    /* width: 100%; */
+    margin-bottom: 20px;
+    
+}
+.artist_part{
+    margin-bottom: 30px;
+    margin-top: 30px;
+    height: 100%;
+    width: 100%;
+}
+
+.artist_search{
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.artist_search_others{
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.artist_img{
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+}
+
+.artist_name{
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.artist_song{
+    display: flex;
+    align-items: center;
+}
+
+.artist_song img{
+    width: 40px;
+    height: 40px;
+}
+
+.artist_space{
+    margin-left: 10px;
+}
+
+.artist_time {
+    margin-left: auto;
+}
+
+.artist_feat{
+    width: 180px;
+    height: 180px;
+    border-radius: 10%;
+}
+
+.artist_feat_title{
+    text-align: center;
+    display: inline-block; /* 한 줄로 배치되도록 수정 */
+    margin-right: 20px;
+}
+
+.artist_feat_img{
+    display: flex;
+    
+}
+
+@media screen and (max-width:48rem){
+    .artist_search{
+        display: none;
+    }
+    .artist_first{
+        display: center;
+        text-align: center;
+        
+    }
+
+    .artist_feat_img{
+        overflow-x: auto; /* 가로 스크롤 추가 */
+        white-space: nowrap; /* 요소들이 한 줄로 나열되게 함 */
+    }
+}
