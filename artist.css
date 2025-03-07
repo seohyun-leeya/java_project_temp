@@ -1,11 +1,14 @@
-body{
+.artist_body{
     background-color: black;
     color: white;
     height: 100%;
     /* width: 100%; */
     margin-bottom: 20px;
-    
+    margin-right: 10px;
+    margin-left: 10px;
 }
+
+
 .artist_part{
     margin-bottom: 30px;
     margin-top: 30px;
@@ -38,6 +41,14 @@ body{
     display: flex;
     align-items: center;
 }
+  
+
+/* 기본 상태에서는 텍스트가 잘리지 않도록 설정 */
+.artist_space div {
+    white-space: normal;  /* 텍스트가 여러 줄로 표시되도록 설정 */
+    overflow: visible;    /* 넘치는 텍스트를 보이도록 설정 */
+    text-overflow: unset; /* 텍스트 잘림 방지 */
+}
 
 .artist_song img{
     width: 40px;
@@ -62,25 +73,67 @@ body{
     text-align: center;
     display: inline-block; /* 한 줄로 배치되도록 수정 */
     margin-right: 20px;
+    /* min-width: 150px; 각 앨범의 최소 너비 */
 }
+
+
+/* 기본 상태에서는 텍스트가 잘리지 않도록 설정 */
+.artist_feat_title div {
+    white-space: normal;  /* 텍스트가 여러 줄로 표시되도록 설정 */
+    overflow: visible;    /* 넘치는 텍스트를 보이도록 설정 */
+    text-overflow: unset; /* 텍스트 잘림 방지 */
+    flex-wrap: nowrap; /* 한 줄 유지 (슬라이드) */
+    width: 100%;
+    overflow-x: auto; /* 가로 스크롤 활성화 */
+    scroll-snap-type: x mandatory; /* 부드러운 스크롤 */
+    scrollbar-width: none;
+}
+
+.artist_feat_img::-webkit-scrollbar {
+    display: none;
+  }
 
 .artist_feat_img{
     display: flex;
+    gap: 10px;
+    overflow-x: auto;  /* 가로 스크롤 활성화 */
+    margin: 10px 0;  /* 좌우 여백 추가 */
+    flex-wrap: nowrap; /* 모바일에서 겹치지 않도록 설정 */
     
 }
 
 @media screen and (max-width:48rem){
+    .artist_body{
+        padding: 1px;
+    }
+
     .artist_search{
         display: none;
     }
+
     .artist_first{
         display: center;
         text-align: center;
         
     }
 
-    .artist_feat_img{
-        overflow-x: auto; /* 가로 스크롤 추가 */
-        white-space: nowrap; /* 요소들이 한 줄로 나열되게 함 */
+    .artist_song_title {
+        white-space: nowrap;  /* 텍스트가 줄 바꿈 없이 한 줄로 표시됨 */
+        overflow: hidden;     /* 넘치는 텍스트가 보이지 않도록 잘림 */
+        text-overflow: ellipsis;  /* '...'으로 표시 */
+      }
+
+    .artist_feat_img {
+        justify-content: flex-start;  /* 모바일에서는 왼쪽 정렬 */
+        flex-wrap: nowrap; /* 앨범이 겹치지 않도록 설정 */
+        overflow-x: auto;  /* 모바일에서는 가로 스크롤 활성화 */
     }
+
+    .artist_feat_title {
+        /* min-width: 120px; 모바일에서 앨범의 크기 조정 */
+        flex-grow: 1; /* 앨범이 공간을 균등하게 차지하도록 설정 */
+    }
+
+    
+    
 }

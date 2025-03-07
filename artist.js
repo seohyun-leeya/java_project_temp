@@ -41,6 +41,7 @@ const searchArtistID = async (artistName) => {
     document.getElementById('artist_name').textContent = artistName;
 
     searchArtistInfo(artistID); // 아티스트 트랙 검색
+    artistAlbumList(artistID); // 아티스트 앨범 검색
   } else {
     console.error("아티스트를 찾을 수 없습니다.");
   }
@@ -49,7 +50,7 @@ const searchArtistID = async (artistName) => {
 // artistID로 아티스트 트랙 검색
 const searchArtistInfo = async (artistID) => {
   const token = await getAccessToken();
-  const url = `https://api.spotify.com/v1/artists/${artistID}/top-tracks?market=KR`;
+  const url = `https://api.spotify.com/v1/artists/${artistID}/top-tracks?market=us`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -71,10 +72,16 @@ const searchArtistInfo = async (artistID) => {
       const trackElement = document.createElement("div");
       trackElement.classList.add("artist_song");
 
+      // 곡 제목이 10자를 초과하면 '...'으로 끝냄 (모바일에서만 적용)
+      let trackName = track.name;
+      if (window.innerWidth <= 768) {  // 모바일 화면일 경우
+        trackName = track.name.length > 15 ? track.name.substring(0, 15) + "..." : track.name;
+      }
+
       trackElement.innerHTML = `
         <img src="${track.album.images[0].url}" alt="${track.name}" class="track_image">
         <div class="artist_space">
-          <div>${track.name}</div>
+          <div>${trackName}</div>
           <div>${track.artists.map(artist => artist.name).join(", ")}</div>
         </div>
         <div class="artist_time">${formatTrackDuration(track.duration_ms)}</div>
@@ -94,6 +101,60 @@ const formatTrackDuration = (durationMs) => {
   return `${minutes}:${(seconds < 10 ? '0' : '') + seconds}`;
 };
 
+// artistID로 아티스트 앨범 검색 (여러 개의 앨범을 로드)
+const artistAlbumList = async (artistID) => {
+  const token = await getAccessToken();
+  const limit = 10; // 한 번에 불러올 앨범 수
+  let offset = 0; // 첫 번째 페이지의 offset 값
+
+  // 여러 페이지에 걸쳐 앨범을 불러오기
+  let hasMoreAlbums = true;
+  const container = document.querySelector(".artist_feat_img");
+  container.innerHTML = ""; // 기존 앨범 초기화
+
+  while (hasMoreAlbums) {
+    const url = `https://api.spotify.com/v1/artists/${artistID}/albums?include_groups=album&market=us&limit=${limit}&offset=${offset}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      const albums = data.items;
+
+      albums.forEach((album) => {
+        const albumElement = document.createElement("div");
+        albumElement.classList.add("artist_feat_title");
+
+        // 화면 크기(모바일) 확인 후, 앨범 제목을 자르도록 처리
+        let albumTitle;
+        if (window.innerWidth <= 768) {
+          albumTitle = album.name.length > 20 ? album.name.substring(0, 20) + "..." : album.name; // 모바일 화면에서만 제목 잘림
+        } else {
+          albumTitle = album.name; // 데스크탑에서는 전체 제목을 그대로 표시
+        }
+        // 앨범 이미지와 제목을 표시
+        albumElement.innerHTML = `
+          <p><img class="artist_feat" src="${album.images[0].url}" alt="${album.name}" /></p>
+          <div>${album.name}</div>
+        `;
+
+        container.appendChild(albumElement);
+      });
+
+      // 다음 페이지로 이동
+      offset += limit;
+    } else {
+      hasMoreAlbums = false; // 더 이상 앨범이 없다면 종료
+    }
+  }
+};
+
+
 // 초기화
-searchArtistID("g-dragon");  // "G-Dragon"을 검색하여 아티스트 정보를 표시
+searchArtistID("샤이니");  // "G-Dragon"을 검색하여 아티스트 정보를 표시
 /* API 연계 END */
